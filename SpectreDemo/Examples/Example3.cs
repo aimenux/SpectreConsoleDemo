@@ -6,7 +6,7 @@ namespace SpectreDemo.Examples
 {
     public class Example3 : AbstractExample
     {
-        public override string Description => $"{base.Description} is about rendering progress bars (synchronous, asynchronous)";
+        public override string Description => $"{GetType().Name} is about rendering progress bars (synchronous, asynchronous)";
 
         public override void Run()
         {

@@ -5,7 +5,7 @@ namespace SpectreDemo.Examples
 {
     public class Example2 : AbstractExample
     {
-        public override string Description => $"{base.Description} is about rendering prompts (choices, secrets, calendars)";
+        public override string Description => $"{GetType().Name} is about rendering prompts (choices, secrets, calendars)";
 
         public override void Run()
         {

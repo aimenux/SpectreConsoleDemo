@@ -5,7 +5,7 @@ namespace SpectreDemo.Examples
 {
     public class Example4 : AbstractExample
     {
-        public override string Description => $"{base.Description} is about rendering widgets (table, rule, calendar)";
+        public override string Description => $"{GetType().Name} is about rendering widgets (table, rule, calendar)";
 
         public override void Run()
         {

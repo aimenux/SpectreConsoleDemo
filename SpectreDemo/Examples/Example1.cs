@@ -5,7 +5,7 @@ namespace SpectreDemo.Examples
 {
     public class Example1 : AbstractExample
     {
-        public override string Description => $"{base.Description} is about rendering exceptions (formats, styles)";
+        public override string Description => $"{GetType().Name} is about rendering exceptions (formats, styles)";
 
         public override void Run()
         {

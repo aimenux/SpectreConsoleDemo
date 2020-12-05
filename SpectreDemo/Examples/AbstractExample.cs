@@ -2,7 +2,7 @@
 {
     public abstract class AbstractExample : IExample
     {
-        public virtual string Description => GetType().Name;
+        public abstract string Description { get; }
 
         public virtual string Style => "[bold yellow on blue]{0}[/]";
 
