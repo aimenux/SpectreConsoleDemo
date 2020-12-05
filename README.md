@@ -1,3 +1,5 @@
+![.NET 5.0](https://github.com/aimenux/SpectreDemo/workflows/.NET%205.0/badge.svg)
+
 # SpectreDemo
 ```
 Playing with spectre library
