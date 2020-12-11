@@ -6,6 +6,7 @@ using Spectre.Console;
 using SpectreDemo.Examples;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace SpectreDemo
 {
@@ -17,14 +18,10 @@ namespace SpectreDemo
 
             using (var serviceScope = host.Services.CreateScope())
             {
-                var examples = serviceScope.ServiceProvider.GetServices<IExample>();
-                foreach(var example in examples)
-                {
-                    AnsiConsole.MarkupLine(example.Style, example.Description);
-                    example.Run();
-                }
+                var example = GetExampleFromPromptChoice(serviceScope);
+                example?.Run();
             }
-            
+
             Console.WriteLine("Press any key to exit !");
             Console.ReadKey();
         }
@@ -69,6 +66,32 @@ namespace SpectreDemo
                 var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
                 return loggerFactory.CreateLogger("SpectreDemo");
             });
+        }
+
+        private static IExample GetExampleFromPromptChoice(IServiceScope serviceScope)
+        {
+            var choice = AnsiConsole.Prompt(
+                    new TextPrompt<int>("Which example do you want to run (0 for exit) ?")
+                        .InvalidChoiceMessage("[red]That's not a valid choice[/]")
+                        .DefaultValue(0)
+                        .AddChoice(1)
+                        .AddChoice(2)
+                        .AddChoice(3)
+                        .AddChoice(4));
+
+            if (choice == 0)
+            {
+                if (AnsiConsole.Capabilities.SupportLinks)
+                {
+                    var link = @"https://github.com/aimenux/SpectreDemo";
+                    AnsiConsole.MarkupLine($"[link={link}]Click to go to github repo[/]!");
+                }
+
+                return null;
+            }
+
+            var examples = serviceScope.ServiceProvider.GetServices<IExample>().ToList();
+            return examples.SingleOrDefault(x => x.GetType().Name.EndsWith($"{choice}"));
         }
     }
 }
