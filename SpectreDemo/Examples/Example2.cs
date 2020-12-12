@@ -16,11 +16,11 @@ namespace SpectreDemo.Examples
 
         private static void BasicPrompts()
         {
-            Console.WriteLine();
+            AnsiConsole.WriteLine();
 
             var name = AnsiConsole.Ask<string>("What's your [blue]name[/]?");
 
-            Console.WriteLine();
+            AnsiConsole.WriteLine();
 
             var age = AnsiConsole.Prompt(
                 new TextPrompt<int>("What's the age?")
@@ -37,7 +37,7 @@ namespace SpectreDemo.Examples
 
         private static void SecretsPrompts()
         {
-            Console.WriteLine();
+            AnsiConsole.WriteLine();
 
             var password = AnsiConsole.Prompt(
                 new TextPrompt<string>("Enter [green]password[/]")
@@ -47,7 +47,7 @@ namespace SpectreDemo.Examples
 
         private static void ChoicesPrompts()
         {
-            Console.WriteLine();
+            AnsiConsole.WriteLine();
 
             var choice = AnsiConsole.Prompt(
                 new TextPrompt<string>("What's your [green]favorite fruit[/]?")
@@ -57,13 +57,13 @@ namespace SpectreDemo.Examples
                     .AddChoice("Banana")
                     .AddChoice("Orange"));
 
-            Console.WriteLine();
+            AnsiConsole.WriteLine();
 
             var optionalChoice = AnsiConsole.Prompt(
                 new TextPrompt<string>("[grey][[Optional]][/] [green]Favorite fruit[/]?")
                 .AllowEmpty());
 
-            Console.WriteLine();
+            AnsiConsole.WriteLine();
         }
     }
 }

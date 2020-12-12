@@ -23,14 +23,16 @@ namespace SpectreDemo.Examples
 
         private static void BasicExceptionWriting(Exception ex)
         {
-            Console.WriteLine();
+            AnsiConsole.WriteLine();
+
             AnsiConsole.MarkupLine("[underline green]Basic exception writing :[/]");
             AnsiConsole.WriteException(ex);
         }
 
         private static void FormattedExceptionWriting(Exception ex)
         {
-            Console.WriteLine();
+            AnsiConsole.WriteLine();
+
             AnsiConsole.MarkupLine("[underline green]Formatted exception writing :[/]");
             AnsiConsole.WriteException(ex,
                 ExceptionFormats.ShortenPaths | ExceptionFormats.ShortenTypes |
@@ -39,7 +41,8 @@ namespace SpectreDemo.Examples
 
         private static void StyledExceptionWriting(Exception ex)
         {
-            Console.WriteLine();
+            AnsiConsole.WriteLine();
+
             AnsiConsole.MarkupLine("[underline green]Styled exception writing :[/]");
             AnsiConsole.WriteException(ex, new ExceptionSettings
             {
@@ -57,7 +60,8 @@ namespace SpectreDemo.Examples
                     LineNumber = new Style().Foreground(Color.Cornsilk1),
                 }
             });
-            Console.WriteLine();
+
+            AnsiConsole.WriteLine();
         }
 
         private static Exception ThrowSomeException()
