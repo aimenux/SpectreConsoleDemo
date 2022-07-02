@@ -1,4 +1,4 @@
-![.NET 5.0](https://github.com/aimenux/SpectreDemo/workflows/.NET%205.0/badge.svg)
+[![.NET](https://github.com/aimenux/SpectreDemo/actions/workflows/ci.yml/badge.svg)](https://github.com/aimenux/SpectreDemo/actions/workflows/ci.yml)
 
 # SpectreDemo
 ```
@@ -13,4 +13,4 @@ Playing with spectre library
 > - `Example4` : rendering widgets (tables, calendars, etc.)
 >
 
-**`Tools`** : vs19, net 5.0, spectre
+**`Tools`** : vs19, net 6.0, spectre
