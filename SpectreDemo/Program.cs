@@ -41,7 +41,7 @@ namespace SpectreDemo
                     loggingBuilder.AddNonGenericLogger();
                     loggingBuilder.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                 })
-                .ConfigureServices((hostingContext, services) =>
+                .ConfigureServices((_, services) =>
                 {
                     services.AddSingleton<IExample, Example1>();
                     services.AddSingleton<IExample, Example2>();

@@ -1,5 +1,5 @@
-﻿using Spectre.Console;
-using System;
+﻿using System.Linq;
+using Spectre.Console;
 using System.Threading.Tasks;
 
 namespace SpectreDemo.Examples
@@ -12,6 +12,7 @@ namespace SpectreDemo.Examples
         {
             SynchronousProgressBars();
             AsynchronousProgressBars().GetAwaiter().GetResult();
+            AnotherAsynchronousProgressBars().GetAwaiter().GetResult();
         }
 
         private static void SynchronousProgressBars()
@@ -45,6 +46,42 @@ namespace SpectreDemo.Examples
                         task2.Increment(1);
                     }
                 });
+        }
+
+        private static async Task AnotherAsynchronousProgressBars()
+        {
+            await AnsiConsole.Progress()
+                .StartAsync(async ctx =>
+                {
+                    var works = Enumerable.Range(0, 10).Select(x => new Work($"Work-{x}", ctx)).ToList();
+                    var progressTasks = works.Select(x => x.ProgressTask).ToList();
+                    var tasks = works.Select(x => x.RunAsync()).ToList();
+                    var mainTask = Task.WhenAll(tasks);
+
+                    while (!ctx.IsFinished)
+                    {
+                        await Task.Delay(20);
+                        foreach (var progressTask in progressTasks)
+                        {
+                            progressTask.Increment(1);
+                        }
+                    }
+
+                    await mainTask;
+                });
+        }
+
+        public class Work
+        {
+            public string Name { get; set; }
+            public ProgressTask ProgressTask { get; }
+            public async Task RunAsync() => await Task.Delay(2000);
+
+            public Work(string name, ProgressContext context)
+            {
+                Name = name;
+                ProgressTask = context.AddTask($"[green]{name} is running[/]");
+            }
         }
     }
 }
