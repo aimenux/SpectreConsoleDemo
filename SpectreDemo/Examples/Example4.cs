@@ -29,7 +29,7 @@ namespace SpectreDemo.Examples
                 .AddRow("[blue]Bonjour[/]", "[white]le[/]", "[red]monde![/]")
                 .AddRow("[blue]Hej[/]", "[yellow]Världen![/]", "");
 
-            AnsiConsole.Render(table);
+            AnsiConsole.Write(table);
         }
 
         private static void RenderRules()
@@ -38,19 +38,19 @@ namespace SpectreDemo.Examples
 
             var rule1 = new Rule("[green]Hello[/]");
             rule1.Alignment = Justify.Left;
-            AnsiConsole.Render(rule1);
+            AnsiConsole.Write(rule1);
 
             AnsiConsole.WriteLine();
 
             var rule2 = new Rule("[blue]Hello[/]");
             rule2.Alignment = Justify.Center;
-            AnsiConsole.Render(rule2);
+            AnsiConsole.Write(rule2);
 
             AnsiConsole.WriteLine();
 
             var rule3 = new Rule("[red]Hello[/]");
             rule3.Alignment = Justify.Right;
-            AnsiConsole.Render(rule3);
+            AnsiConsole.Write(rule3);
         }
 
         private static void RenderCalendar()
@@ -58,14 +58,14 @@ namespace SpectreDemo.Examples
             AnsiConsole.WriteLine();
 
             var calendar = new Calendar(DateTime.Now.Year, DateTime.Now.Month);
-            AnsiConsole.Render(calendar);
+            AnsiConsole.Write(calendar);
         }
 
         private static void RenderFiglets()
         {
             AnsiConsole.WriteLine();
 
-            AnsiConsole.Render(
+            AnsiConsole.Write(
                 new FigletText("Figlets")
                     .LeftAligned()
                     .Color(Color.Navy));

@@ -28,7 +28,7 @@ namespace SpectreDemo
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((hostingContext, config) =>
+                .ConfigureAppConfiguration((_, config) =>
                 {
                     config.AddCommandLine(args);
                     config.AddEnvironmentVariables();
@@ -79,17 +79,7 @@ namespace SpectreDemo
                         .AddChoice(3)
                         .AddChoice(4));
 
-            if (choice == 0)
-            {
-                if (AnsiConsole.Capabilities.SupportLinks)
-                {
-                    var link = @"https://github.com/aimenux/SpectreDemo";
-                    AnsiConsole.MarkupLine($"[link={link}]Click to go to github repo[/]!");
-                }
-
-                return null;
-            }
-
+            if (choice == 0) return null;
             var examples = serviceScope.ServiceProvider.GetServices<IExample>().ToList();
             return examples.SingleOrDefault(x => x.GetType().Name.EndsWith($"{choice}"));
         }
