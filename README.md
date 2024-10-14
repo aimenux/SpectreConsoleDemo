@@ -1,10 +1,10 @@
 [![.NET](https://github.com/aimenux/SpectreDemo/actions/workflows/ci.yml/badge.svg)](https://github.com/aimenux/SpectreDemo/actions/workflows/ci.yml)
 
-# SpectreDemo
+# SpectreConsoleDemo
 ```
-Playing with spectre library
+Playing with SpectreConsole library
 ```
-> In this demo, i m playing with [spectre](https://github.com/spectresystems/spectre.console) library
+> In this demo, i m playing with [SpectreConsole](https://github.com/spectresystems/spectre.console) library
 >
 > The solution consists of multiple examples :
 > - `Example1` : rendering exceptions (with formatting or styles, etc.)
@@ -13,4 +13,4 @@ Playing with spectre library
 > - `Example4` : rendering widgets (tables, calendars, etc.)
 >
 
-**`Tools`** : vs19, net 6.0, spectre
+**`Tools`** : net 8.0, spectre-console
