@@ -13,4 +13,4 @@ Playing with SpectreConsole library
 > - `Example4` : rendering widgets (tables, calendars, etc.)
 >
 
-**`Tools`** : net 8.0, spectre-console
+**`Tools`** : net 9.0, spectre-console
