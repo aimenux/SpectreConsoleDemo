@@ -13,38 +13,25 @@ namespace App;
 
 public static class Program
 {
+    static Program()
+    {
+        Console.InputEncoding = Encoding.UTF8;
+        Console.OutputEncoding = Encoding.UTF8;
+    }
+
     public static async Task Main(string[] args)
     {
-        Console.OutputEncoding = Encoding.UTF8;
-
         using var host = CreateHostBuilder(args).Build();
 
         using var serviceScope = host.Services.CreateScope();
 
-        using var cts = new CancellationTokenSource();
-        ConsoleCancelEventHandler onCancel = (_, e) =>
+        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(5));
+        var cancellationToken = cts.Token;
+        
+        var example = await GetSelectedExampleAsync(serviceScope, cancellationToken);
+        if (example is not null)
         {
-            e.Cancel = true;
-            cts.Cancel();
-        };
-
-        Console.CancelKeyPress += onCancel;
-        try
-        {
-            var example = await GetExampleFromPromptChoiceAsync(serviceScope, cts.Token);
-            if (example is not null)
-            {
-                await example.RunAsync(cts.Token);
-            }
-        }
-        catch (OperationCanceledException)
-        {
-            AnsiConsole.MarkupLine("[yellow]Cancelled[/]");
-            return;
-        }
-        finally
-        {
-            Console.CancelKeyPress -= onCancel;
+            await example.RunAsync(cancellationToken);
         }
 
         Console.WriteLine("Press any key to exit !");
@@ -73,7 +60,7 @@ public static class Program
         });
     }
 
-    private static async Task<IExample> GetExampleFromPromptChoiceAsync(IServiceScope serviceScope, CancellationToken cancellationToken)
+    private static async Task<IExample> GetSelectedExampleAsync(IServiceScope serviceScope, CancellationToken cancellationToken)
     {
         var examples = serviceScope.ServiceProvider.GetServices<IExample>().ToList();
 
