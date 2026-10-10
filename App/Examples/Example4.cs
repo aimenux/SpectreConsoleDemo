@@ -1,18 +1,25 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Spectre.Console;
 
 namespace App.Examples;
 
 public class Example4 : AbstractExample
 {
-    public override string Description => $"{GetType().Name} is about rendering widgets (table, rule, calendar)";
+    public override string Description => $"{GetType().Name} is about rendering widgets (table, rule, calendar, figlet, panel, tree, chart)";
 
-    public override void Run()
+    public override Task RunAsync(CancellationToken cancellationToken)
     {
         RenderTables();
         RenderRules();
         RenderCalendar();
         RenderFiglets();
+        RenderPanel();
+        RenderTree();
+        RenderBarChart();
+
+        return Task.CompletedTask;
     }
 
     private static void RenderTables()
@@ -36,34 +43,28 @@ public class Example4 : AbstractExample
     {
         AnsiConsole.WriteLine();
 
-        var rule1 = new Rule("[green]Hello[/]")
+        var rules = new[]
         {
-            Justification = Justify.Left
+            (Color: "green", Justification: Justify.Left),
+            (Color: "blue", Justification: Justify.Center),
+            (Color: "red", Justification: Justify.Right),
         };
-        AnsiConsole.Write(rule1);
 
-        AnsiConsole.WriteLine();
-
-        var rule2 = new Rule("[blue]Hello[/]")
+        foreach (var (color, justification) in rules)
         {
-            Justification = Justify.Center
-        };
-        AnsiConsole.Write(rule2);
-
-        AnsiConsole.WriteLine();
-
-        var rule3 = new Rule("[red]Hello[/]")
-        {
-            Justification = Justify.Right
-        };
-        AnsiConsole.Write(rule3);
+            AnsiConsole.Write(new Rule($"[{color}]Hello[/]") { Justification = justification });
+            AnsiConsole.WriteLine();
+        }
     }
 
     private static void RenderCalendar()
     {
         AnsiConsole.WriteLine();
 
-        var calendar = new Calendar(DateTime.Now.Year, DateTime.Now.Month);
+        var today = DateTime.Today;
+        var calendar = new Calendar(today.Year, today.Month)
+            .AddCalendarEvent(today)
+            .HighlightStyle(Spectre.Console.Style.Parse("bold green"));
         AnsiConsole.Write(calendar);
     }
 
@@ -77,5 +78,40 @@ public class Example4 : AbstractExample
                 .Color(Color.Navy));
 
         AnsiConsole.WriteLine();
+    }
+
+    private static void RenderPanel()
+    {
+        AnsiConsole.WriteLine();
+
+        var panel = new Panel("[green]Panels[/] wrap any content in a border")
+            .Header("[yellow]Panel[/]")
+            .Border(BoxBorder.Rounded)
+            .Padding(1, 0);
+        AnsiConsole.Write(panel);
+    }
+
+    private static void RenderTree()
+    {
+        AnsiConsole.WriteLine();
+
+        var tree = new Tree("[yellow]Solution[/]");
+        var examples = tree.AddNode("[green]Examples[/]");
+        examples.AddNodes("Example1", "Example2", "Example3", "Example4");
+        tree.AddNode("Program");
+        AnsiConsole.Write(tree);
+    }
+
+    private static void RenderBarChart()
+    {
+        AnsiConsole.WriteLine();
+
+        var chart = new BarChart()
+            .Width(60)
+            .Label("[underline]Fruits sold[/]")
+            .AddItem("Apple", 12, Color.Red)
+            .AddItem("Banana", 8, Color.Yellow)
+            .AddItem("Orange", 15, Color.Orange1);
+        AnsiConsole.Write(chart);
     }
 }

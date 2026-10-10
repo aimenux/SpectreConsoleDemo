@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using App.Examples;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -10,13 +13,39 @@ namespace App;
 
 public static class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
+        Console.OutputEncoding = Encoding.UTF8;
+
         using var host = CreateHostBuilder(args).Build();
 
         using var serviceScope = host.Services.CreateScope();
-        var example = GetExampleFromPromptChoice(serviceScope);
-        example?.Run();
+
+        using var cts = new CancellationTokenSource();
+        ConsoleCancelEventHandler onCancel = (_, e) =>
+        {
+            e.Cancel = true;
+            cts.Cancel();
+        };
+
+        Console.CancelKeyPress += onCancel;
+        try
+        {
+            var example = await GetExampleFromPromptChoiceAsync(serviceScope, cts.Token);
+            if (example is not null)
+            {
+                await example.RunAsync(cts.Token);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            AnsiConsole.MarkupLine("[yellow]Cancelled[/]");
+            return;
+        }
+        finally
+        {
+            Console.CancelKeyPress -= onCancel;
+        }
 
         Console.WriteLine("Press any key to exit !");
         Console.ReadKey();
@@ -24,18 +53,15 @@ public static class Program
 
     private static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
-            .ConfigureLogging((hostingContext, loggingBuilder) =>
-            {
-                loggingBuilder.AddConsoleLogger();
-                loggingBuilder.AddNonGenericLogger();
-                loggingBuilder.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
-            })
+            .ConfigureLogging(loggingBuilder => loggingBuilder.AddConsoleLogger())
             .ConfigureServices((_, services) =>
             {
                 services.AddSingleton<IExample, Example1>();
                 services.AddSingleton<IExample, Example2>();
                 services.AddSingleton<IExample, Example3>();
                 services.AddSingleton<IExample, Example4>();
+                services.AddSingleton<IExample, Example5>();
+                services.AddSingleton<IExample, Example6>();
             });
 
     private static void AddConsoleLogger(this ILoggingBuilder loggingBuilder)
@@ -47,33 +73,22 @@ public static class Program
         });
     }
 
-    private static void AddNonGenericLogger(this ILoggingBuilder loggingBuilder)
+    private static async Task<IExample> GetExampleFromPromptChoiceAsync(IServiceScope serviceScope, CancellationToken cancellationToken)
     {
-        var services = loggingBuilder.Services;
-        services.AddSingleton(serviceProvider =>
-        {
-            var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-            return loggerFactory.CreateLogger("SpectreDemo");
-        });
-    }
+        var examples = serviceScope.ServiceProvider.GetServices<IExample>().ToList();
 
-    private static IExample GetExampleFromPromptChoice(IServiceScope serviceScope)
-    {
-        var choice = AnsiConsole.Prompt(
+        for (var i = 0; i < examples.Count; i++)
+        {
+            var description = Markup.Escape(examples[i].Description);
+            AnsiConsole.MarkupLine($"{i + 1} - {string.Format(examples[i].Style, description)}");
+        }
+
+        var choice = await AnsiConsole.PromptAsync(
             new TextPrompt<int>("Which example do you want to run (0 for exit) ?")
                 .InvalidChoiceMessage("[red]That's not a valid choice[/]")
                 .DefaultValue(0)
-                .AddChoice(1)
-                .AddChoice(2)
-                .AddChoice(3)
-                .AddChoice(4));
+                .AddChoices(Enumerable.Range(0, examples.Count + 1)), cancellationToken);
 
-        if (choice == 0)
-        {
-            return null;
-        }
-            
-        var examples = serviceScope.ServiceProvider.GetServices<IExample>().ToList();
-        return examples.SingleOrDefault(x => x.GetType().Name.EndsWith($"{choice}"));
+        return choice == 0 ? null : examples[choice - 1];
     }
 }

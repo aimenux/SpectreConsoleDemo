@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Spectre.Console;
 
 namespace App.Examples;
@@ -7,7 +9,7 @@ public class Example1 : AbstractExample
 {
     public override string Description => $"{GetType().Name} is about rendering exceptions (formats, styles)";
 
-    public override void Run()
+    public override Task RunAsync(CancellationToken cancellationToken)
     {
         try
         {
@@ -19,6 +21,8 @@ public class Example1 : AbstractExample
             FormattedExceptionWriting(ex);
             StyledExceptionWriting(ex);
         }
+
+        return Task.CompletedTask;
     }
 
     private static void BasicExceptionWriting(Exception ex)
@@ -66,6 +70,6 @@ public class Example1 : AbstractExample
 
     private static void ThrowSomeException()
     {
-        throw new ArgumentException("An error has occured!");
+        throw new ArgumentException("An error has occurred!");
     }
 }

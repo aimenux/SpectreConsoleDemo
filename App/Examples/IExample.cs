@@ -1,8 +1,11 @@
-﻿namespace App.Examples;
+﻿using System.Threading;
+using System.Threading.Tasks;
+
+namespace App.Examples;
 
 public interface IExample
 {
     string Description { get; }
     string Style { get; }
-    void Run();
+    Task RunAsync(CancellationToken cancellationToken);
 }
